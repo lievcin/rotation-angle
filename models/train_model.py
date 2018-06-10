@@ -36,7 +36,7 @@ def angle_error(y_true, y_pred):
 def train_model(_):
 
     batch_size = 128
-    epochs = 50
+    epochs = 100
 
     # number of filters to use
     nb_filters = 64
