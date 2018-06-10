@@ -1,7 +1,10 @@
 from __future__ import print_function
 
-import os
-import sys
+import argparse, sys, os, warnings
+if not sys.warnoptions:
+    warnings.simplefilter("ignore")
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 import numpy as np
 
 import keras
@@ -12,6 +15,8 @@ from keras import backend as K
 
 import os.path
 my_path = os.path.abspath(os.path.dirname(__file__))
+
+FLAGS=None
 
 def angle_difference(x, y):
     """
@@ -28,12 +33,10 @@ def angle_error(y_true, y_pred):
     diff = angle_difference(K.argmax(y_true), K.argmax(y_pred))
     return K.mean(K.cast(K.abs(diff), K.floatx()))
 
-def train_model():
+def train_model(_):
 
     batch_size = 128
     epochs = 50
-
-    model_name = 'ssss'
 
     # number of filters to use
     nb_filters = 64
@@ -50,7 +53,12 @@ def train_model():
     Y_test = np.load(os.path.join(my_path, '../data/processed/test/test_Y.npy'))
 
 
-    nb_train_samples, img_rows, img_cols,img_channels = X_train.shape
+    if FLAGS.dataset == 'cifar10':
+        nb_train_samples, img_rows, img_cols, img_channels = X_train.shape
+    elif FLAGS.dataset == 'mnist':
+        nb_train_samples, img_rows, img_cols = X_train.shape
+        img_channels = 1
+
     input_shape = (img_rows, img_cols, img_channels)
     nb_test_samples = X_test.shape[0]
 
@@ -70,14 +78,15 @@ def train_model():
     model.add(Dropout(0.25))
     model.add(Dense(nb_classes, activation='softmax'))
 
-    model.summary()    
+    model.summary()
 
     model.compile(loss=keras.losses.categorical_crossentropy,
           optimizer='adam',
           metrics=[angle_error])
 
+    #making the labels one-hot categorical
     Y_train = keras.utils.to_categorical(Y_train, nb_classes)
-    Y_test = keras.utils.to_categorical(Y_test, nb_classes)    
+    Y_test = keras.utils.to_categorical(Y_test, nb_classes)
 
     model.fit(X_train, Y_train,
               batch_size=batch_size,
@@ -87,15 +96,13 @@ def train_model():
 
     # serialize model to JSON
     model_json = model.to_json()
-    with open('models/cifar10.json', 'w') as json_file:
+    with open('models/' + FLAGS.dataset + '.json', 'w') as json_file:
         json_file.write(model_json)
-    # serialize weights to HDF5        
-    model.save_weights('models/cifar10.h5')    
+    # serialize weights to HDF5
+    model.save_weights('models/' + FLAGS.dataset + '.h5')
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('--model_type', type=str, default='mel', help='Choose from mel or mfcc model to classify.')
-    # parser.add_argument('--file_path', type=str, default='data/cats_dogs/cat_1.wav', help='File you want to analyse.')
-    # FLAGS, unparsed = parser.parse_known_args()
-    # main(FLAGS)
-    train_model()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset', type=str, default='cifar10', help='Choose from cifar10 or MNIST dataset to train model and save')
+    FLAGS, unparsed = parser.parse_known_args()
+    train_model(FLAGS)
