@@ -55,9 +55,14 @@ def train_model(_):
 
     if FLAGS.dataset == 'cifar10':
         nb_train_samples, img_rows, img_cols, img_channels = X_train.shape
+        # input_shape = (img_rows, img_cols, img_channels)
     elif FLAGS.dataset == 'mnist':
         nb_train_samples, img_rows, img_cols = X_train.shape
         img_channels = 1
+
+        # input_shape = (img_rows, img_cols, img_channels)
+        X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], X_train.shape[2], img_channels)
+        X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], X_test.shape[2], img_channels)
 
     input_shape = (img_rows, img_cols, img_channels)
     nb_test_samples = X_test.shape[0]
@@ -65,8 +70,6 @@ def train_model(_):
     print('Input shape:', input_shape)
     print(nb_train_samples, 'train samples')
     print(nb_test_samples, 'test samples')
-
-    input_shape = (img_rows, img_cols, img_channels)
 
     model = Sequential()
     model.add(Conv2D(64, kernel_size, activation='relu', input_shape=input_shape))

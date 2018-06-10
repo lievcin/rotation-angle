@@ -1,5 +1,5 @@
 import numpy as np
-from utils import rotate_image, crop_around_center, binarize_images
+from utils import crop_around_center, binarize_images
 
 import argparse, sys, os, warnings
 
@@ -25,7 +25,8 @@ def test_images(_):
 
     if original_img.shape == rotated_img.shape:
 
-        processed_image = np.vstack((original_img,rotated_img))
+        binarized_images = binarize_images([original_img,rotated_img])
+        processed_image = np.vstack(binarized_images)
 
         input_h = processed_image.shape[0] #Height
         input_w = processed_image.shape[1] #Width
