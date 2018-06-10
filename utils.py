@@ -2,7 +2,17 @@ import math
 import cv2
 import numpy as np
 
+def binarize_images(x):
+    """
+    Convert images to range 0-1 and binarize them by making
+    0 the values below 0.1 and 1 the values above 0.1.
+    """
+    x /= 255
+    x[x >= 0.1] = 1
+    x[x < 0.1] = 0
 
+    return x
+ 
 def rotate_image(image, angle):
     """
     Rotates an OpenCV 2 / NumPy image about it's centre by the given angle

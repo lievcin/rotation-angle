@@ -4,19 +4,11 @@ import os
 import sys
 import numpy as np
 
-# from keras.callbacks import ModelCheckpoint, EarlyStopping, TensorBoard
 import keras
 from keras.layers import Dense, Dropout, Flatten, Input
 from keras.layers import Conv2D, MaxPooling2D
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras import backend as K
-
-
-# module_path = os.path.abspath(os.path.join('..'))
-# if module_path not in sys.path:
-#     sys.path.append(module_path)
-#     print(sys.path.append(module_path))
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import os.path
 my_path = os.path.abspath(os.path.dirname(__file__))
@@ -38,7 +30,7 @@ def angle_error(y_true, y_pred):
 
 def train_model():
 
-    batch_size = 32
+    batch_size = 128
     epochs = 50
 
     model_name = 'ssss'
@@ -78,35 +70,27 @@ def train_model():
     model.add(Dropout(0.25))
     model.add(Dense(nb_classes, activation='softmax'))
 
-    model.summary()
+    model.summary()    
 
     model.compile(loss=keras.losses.categorical_crossentropy,
           optimizer='adam',
           metrics=[angle_error])
 
     Y_train = keras.utils.to_categorical(Y_train, nb_classes)
+    Y_test = keras.utils.to_categorical(Y_test, nb_classes)    
 
     model.fit(X_train, Y_train,
               batch_size=batch_size,
               epochs=epochs,
               verbose=1,
-              validation_split=0.1)
+              validation_data=(X_test, Y_test))
 
-
-    # model definition
-    # input = Input(shape=(img_rows, img_cols, img_channels))
-    # x = Conv2D(nb_filters, kernel_size, activation='relu')(input)
-    # x = Conv2D(nb_filters, kernel_size, activation='relu')(x)
-    # x = MaxPooling2D(pool_size=(2, 2))(x)
-    # x = Dropout(0.25)(x)
-    # x = Flatten()(x)
-    # x = Dense(128, activation='relu')(x)
-    # x = Dropout(0.25)(x)
-    # x = Dense(nb_classes, activation='softmax')(x)
-    #
-    # model = Model(inputs=input, outputs=x)
-    #
-    # model.summary()
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open('models/cifar10.json', 'w') as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5        
+    model.save_weights('models/cifar10.h5')    
 
 if __name__ == '__main__':
     # parser = argparse.ArgumentParser()

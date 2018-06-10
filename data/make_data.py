@@ -1,11 +1,12 @@
 from __future__ import print_function
+from __future__ import division
 
 import numpy as np
 import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils import rotate_image, crop_around_center
+from utils import rotate_image, crop_around_center, binarize_images
 
 # https://github.com/keras-team/keras/blob/a379b4207ab98c7e6b11ceb0e012a348d7b951d5/keras/datasets/cifar10.py
 from keras.datasets import cifar10
@@ -32,7 +33,9 @@ def make_data(seed=0):
         temp_y.append(angle)
 
     temp_x = np.stack(temp_x, axis=0)
-    temp_y = np.stack(temp_y, axis=0)
+    temp_x = temp_x.astype(float)
+    temp_x = binarize_images(temp_x)
+    temp_y = np.stack(temp_y, axis=0)    
 
     np.save('data/processed/training/training_X.npy', temp_x)
     np.save('data/processed/training/training_Y.npy', temp_y)
@@ -46,6 +49,8 @@ def make_data(seed=0):
         temp_y.append(angle)
 
     temp_x = np.stack(temp_x, axis=0)
+    temp_x = temp_x.astype(float)
+    temp_x = binarize_images(temp_x)    
     temp_y = np.stack(temp_y, axis=0)
 
     np.save('data/processed/test/test_X.npy', temp_x)
