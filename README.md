@@ -1,4 +1,4 @@
-find-rotation-angle
+# find-rotation-angle
 ==============================
 
 This is a small project to find the rotation angle of a given image using neural network
@@ -6,52 +6,37 @@ This is a small project to find the rotation angle of a given image using neural
 Project Organization
 ------------
 
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
+    ├── data    
+    │   ├── processed      <- The final, canonical data sets for modelling.
+    │   ├── make_data.py   <- Script to generate the training and test data.
+    │   │                     can be executed as python data/make_data.py and accepts parameters dataset=mnist or cifar10
+    │   │                     and seed which should be an integer. By default makes data with cifar10 and seed=0
     │   └── raw            <- The original, immutable data dump.
+    │                         In this project empty as the datasets are generated on the fly
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── models             <- Trained and serialized models, model predictions, or model summaries.
+    │   ├── train_model.py <- Script to train a model in 50 epochs.
+    │   │                      can be executed as python models/train_model.py accepts parameters dataset=mnist or cifar10
+    │   │                      which depends on the contents in the data/processed folder, as it will not train correctly or
+    │   │                      at all if the datasets don't match.
+    │   │── cifar10.h5     <- pre-trained model for 50 epochs of cifar10 data
+    │   │── cifar10.json   <- pre-trained model for 50 epochs of cifar10 data
+    │   │── mnist.h5       <- pre-trained model for 100 epochs of mnist data
+    │   │── mnist.json     <- pre-trained model for 100 epochs of mnist data
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering).
+    │                         In these notebooks there's some data exploration regarding downloading the files,
+    │                         as well as rotating images and generating sample images for test through console
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
+    ├── test_images        <- Two pairs of images that can be used to test the classification models.
+    │                         In these notebooks there's some data exploration regarding downloading the files,
+    │                         as well as rotating images and generating sample images for test through console    
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    ├── utils.py           <- utility functions file used across the project
     │
-    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
-
-
---------
-
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+    └── test_models.py     <- Script to test the models on test images or provided ones. It can take three arguments
+                              original_image_path, rotated_image_path and model_name (by default cifar10). The script will
+                              check the sizes of both images and then classify using the supplied model.
