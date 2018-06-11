@@ -20,13 +20,25 @@ def test_images(_):
         print('Cannot find one or two of the images needed')
         sys.exit()
     else:
-        original_img = mpimg.imread(FLAGS.original_image_path)
-        rotated_img = mpimg.imread(FLAGS.rotated_image_path)
+        original_img = mpimg.imread(FLAGS.original_image_path).astype(float)
+        rotated_img = mpimg.imread(FLAGS.rotated_image_path).astype(float)
 
     if original_img.shape == rotated_img.shape:
 
-        binarized_images = binarize_images([original_img,rotated_img])
-        processed_image = np.vstack(binarized_images)
+        #crop the images in order to match the model
+        if FLAGS.model_name == 'cifar10':
+            original_img = crop_around_center(original_img, 32, 32)
+            rotated_img = crop_around_center(rotated_img, 32, 32)
+        elif FLAGS.model_name == 'mnist':
+            original_img = crop_around_center(original_img, 28, 28)
+            rotated_img = crop_around_center(rotated_img, 28, 28)
+        else:
+            print('Neither of the available models selected')
+            sys.exit()
+
+        original_img = binarize_images(original_img)
+        rotated_img = binarize_images(rotated_img)
+        processed_image = np.vstack((original_img, rotated_img))
 
         input_h = processed_image.shape[0] #Height
         input_w = processed_image.shape[1] #Width
@@ -51,7 +63,6 @@ def test_images(_):
     angle_difference = np.argmax(scores)
 
     print('Angle difference between the pictures: ' + str(angle_difference) + ' degrees.')
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
