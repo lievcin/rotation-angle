@@ -7,7 +7,7 @@ Project Organization
 ------------
 
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data    
+    ├── data
     │   ├── processed      <- The final, canonical data sets for modelling.
     │   ├── make_data.py   <- Script to generate the training and test data.
     │   │                     can be executed as python data/make_data.py and accepts parameters dataset=mnist or cifar10
