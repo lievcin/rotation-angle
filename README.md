@@ -9,11 +9,9 @@ Project Organization
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
     │   ├── processed      <- The final, canonical data sets for modelling.
-    │   ├── make_data.py   <- Script to generate the training and test data.
-    │   │                     can be executed as python data/make_data.py and accepts parameters dataset=mnist or cifar10
-    │   │                     and seed which should be an integer. By default makes data with cifar10 and seed=0
-    │   └── raw            <- The original, immutable data dump.
-    │                         In this project empty as the datasets are generated on the fly
+    │   └── make_data.py   <- Script to generate the training and test data.
+    │                         can be executed as python data/make_data.py and accepts parameters dataset=mnist or cifar10
+    │                         and seed which should be an integer. By default makes data with cifar10 and seed=0
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries.
     │   ├── train_model.py <- Script to train a model in 50 epochs.
@@ -23,7 +21,7 @@ Project Organization
     │   │── cifar10.h5     <- pre-trained model for 50 epochs of cifar10 data
     │   │── cifar10.json   <- pre-trained model for 50 epochs of cifar10 data
     │   │── mnist.h5       <- pre-trained model for 100 epochs of mnist data
-    │   │── mnist.json     <- pre-trained model for 100 epochs of mnist data
+    │   └── mnist.json     <- pre-trained model for 100 epochs of mnist data
     │
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering).
     │                         In these notebooks there's some data exploration regarding downloading the files,
